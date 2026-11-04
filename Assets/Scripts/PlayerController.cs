@@ -23,7 +23,7 @@ public class PlayerController : MonoBehaviour
     // Called every frame: checks for jump input.
     private void Update()
     {
-        if (jumpAction.triggered && isGrounded)  // Pressed 'Space' AND on the ground
+        if (jumpAction.triggered && isGrounded && !gameOver)  // Jump input detected, player is on the ground, and game is not over
         {
             _playerRb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse); // Instant upward push
             isGrounded = false;                  // Now in the air; blocks double jumping
