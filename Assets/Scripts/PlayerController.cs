@@ -11,6 +11,7 @@ public class PlayerController : MonoBehaviour
     public bool isGrounded = true;        // True while touching something; prevents mid-air jumps
     public bool gameOver = false;         // True when the player hits an obstacle; stops movement and spawning
     public ParticleSystem explosionParticle;    // Particle system to play when the player dies
+    public ParticleSystem dirtParticle;         // Particle system to play while the player is running on the ground
 
     // Called once before the first frame: setup and initialization.
     private void Start()
@@ -29,6 +30,7 @@ public class PlayerController : MonoBehaviour
             _playerRb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse); // Instant upward push
             isGrounded = false;                  // Now in the air; blocks double jumping
             _playerAnim.SetTrigger("Jump_trig");  // Play jump animation
+            dirtParticle.Stop();                  // Stop the running dust particle effect while in the air
         }
     }
 
@@ -38,14 +40,16 @@ public class PlayerController : MonoBehaviour
         if (collision.gameObject.CompareTag("Ground"))
         {
             isGrounded = true;                       // Landed on the ground; allow jumping again
+            dirtParticle.Play();                     // Resume the running dust particle effect
         }
         else if (collision.gameObject.CompareTag("Obstacle"))
         {
             Debug.Log("Game Over");
             gameOver = true;
+            dirtParticle.Stop();                        // Stop the running dust particle effect
+            explosionParticle.Play();                     // Play particle effect
             _playerAnim.SetBool("Death_b", true);   // Play death animation
             _playerAnim.SetInteger("DeathType_int", 1); // Play death animation type
-            explosionParticle.Play();                     // Play particle effect
         }
     }
 }
