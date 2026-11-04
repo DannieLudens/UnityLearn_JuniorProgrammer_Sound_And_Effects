@@ -3,16 +3,17 @@ using UnityEngine;
 public class SpawnManager : MonoBehaviour
 {
     [SerializeField] private GameObject obstaclePrefab;
-    private Vector3 _spawnPoint = new Vector3(25f, 0f, 0f);
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
+    private readonly Vector3 _spawnPoint = new Vector3(25, 0, 0);
+    [SerializeField] private float startDelay = 2f;
+    [SerializeField] private float repeatRate = 2f;
+    
     void Start()
     {
-        Instantiate(obstaclePrefab, _spawnPoint, obstaclePrefab.transform.rotation);   
+        InvokeRepeating(nameof(SpawnObstacle), startDelay, repeatRate);   
     }
-
-    // Update is called once per frame
-    void Update()
+    
+    private void SpawnObstacle()
     {
-        
+        Instantiate(obstaclePrefab, _spawnPoint, obstaclePrefab.transform.rotation);
     }
 }
