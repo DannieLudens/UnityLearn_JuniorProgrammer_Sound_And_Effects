@@ -5,7 +5,8 @@ public class PlayerControllerX : MonoBehaviour
 {
     public bool gameOver = false;
 
-    public float floatForce;
+    public float floatForce = 15;         // Upward acceleration while floating (ignores mass)
+    public float maxRiseSpeed = 8;        // Cap on upward speed so the balloon can't shoot off-screen (keep >= bounceSpeed)
     private float gravityModifier = 1.5f;
     private Rigidbody playerRb;
 
@@ -17,8 +18,9 @@ public class PlayerControllerX : MonoBehaviour
     private AudioSource playerAudio;
     public AudioClip moneySound;
     public AudioClip explodeSound;
+    public AudioClip bounceSound;         // Sound played when bouncing off the ground (assign in Inspector)
+    public float bounceSpeed = 7;        // Upward speed the balloon leaves the ground with after bouncing
     private float topBound = 15;
-    private float bottomBound = 0;
     private bool isLowEnough;
 
 
@@ -35,15 +37,22 @@ public class PlayerControllerX : MonoBehaviour
 
     }
 
-    // Update is called once per frame
-    void Update()
+    // Called at a fixed rate in sync with physics: continuous forces go here, not in Update.
+    void FixedUpdate()
     {
-        isLowEnough = transform.position.y < topBound;   // Re-check the height every frame
+        isLowEnough = transform.position.y < topBound;   // Re-check the height every physics step
 
         // While space is pressed and player is low enough, float up
         if (floatAction.IsPressed() && isLowEnough && !gameOver)
         {
-            playerRb.AddForce(Vector3.up * floatForce);
+            playerRb.AddForce(Vector3.up * floatForce, ForceMode.Acceleration); // Continuous lift, same at any mass
+        }
+
+        // Limit upward speed so releasing space near the top doesn't fling the balloon off-screen
+        Vector3 velocity = playerRb.linearVelocity;
+        if (velocity.y > maxRiseSpeed)
+        {
+            playerRb.linearVelocity = new Vector3(velocity.x, maxRiseSpeed, velocity.z);
         }
 
     }
@@ -67,6 +76,14 @@ public class PlayerControllerX : MonoBehaviour
             playerAudio.PlayOneShot(moneySound, 1.0f);
             Destroy(other.gameObject);
 
+        }
+
+        // if player hits the ground, bounce back up
+        else if (other.gameObject.CompareTag("Ground") && !gameOver)
+        {
+            Vector3 velocity = playerRb.linearVelocity;
+            playerRb.linearVelocity = new Vector3(velocity.x, bounceSpeed, velocity.z); // Same bounce no matter how fast it fell
+            playerAudio.PlayOneShot(bounceSound, 1.0f);                                  // Play bounce sound
         }
 
     }
