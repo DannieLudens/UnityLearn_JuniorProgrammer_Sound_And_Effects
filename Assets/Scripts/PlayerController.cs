@@ -8,7 +8,7 @@ public class PlayerController : MonoBehaviour
     public float jumpForce = 10;          // Strength of the upward jump impulse
     public float gravityModifier;         // Global gravity multiplier (higher = snappier jump)
     public bool isGrounded = true;        // True while touching something; prevents mid-air jumps
-    public bool gameOver = false;         // True when the player has hit an obstacle; stops movement and spawning
+    public bool gameOver = false;
 
     // Called once before the first frame: setup and initialization.
     private void Start()
@@ -33,7 +33,7 @@ public class PlayerController : MonoBehaviour
     {
         if (collision.gameObject.CompareTag("Ground"))
         {
-            isGrounded = true;                       // Landed on the ground; allow jumping again
+            isGrounded = true;                       // Any collision counts as landing
         }
         else if (collision.gameObject.CompareTag("Obstacle"))
         {
