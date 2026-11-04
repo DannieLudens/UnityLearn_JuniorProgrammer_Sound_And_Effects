@@ -3,7 +3,7 @@ using UnityEngine.InputSystem;
 
 public class PlayerControllerX : MonoBehaviour
 {
-    public bool gameOver;
+    public bool gameOver = false;
 
     public float floatForce;
     private float gravityModifier = 1.5f;
@@ -17,11 +17,15 @@ public class PlayerControllerX : MonoBehaviour
     private AudioSource playerAudio;
     public AudioClip moneySound;
     public AudioClip explodeSound;
+    private float topBound = 15;
+    private float bottomBound = 0;
+    private bool isLowEnough;
 
 
     // Start is called before the first frame update
     void Start()
     {
+        playerRb = GetComponent<Rigidbody>();
         Physics.gravity *= gravityModifier;
         playerAudio = GetComponent<AudioSource>();
         floatAction.Enable();
@@ -34,11 +38,14 @@ public class PlayerControllerX : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        isLowEnough = transform.position.y < topBound;   // Re-check the height every frame
+
         // While space is pressed and player is low enough, float up
-        if (floatAction.IsPressed() && !gameOver)
+        if (floatAction.IsPressed() && isLowEnough && !gameOver)
         {
             playerRb.AddForce(Vector3.up * floatForce);
         }
+
     }
 
     private void OnCollisionEnter(Collision other)
