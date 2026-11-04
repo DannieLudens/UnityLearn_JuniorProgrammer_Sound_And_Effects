@@ -8,6 +8,7 @@ public class PlayerController : MonoBehaviour
     public float jumpForce = 10;          // Strength of the upward jump impulse
     public float gravityModifier;         // Global gravity multiplier (higher = snappier jump)
     public bool isGrounded = true;        // True while touching something; prevents mid-air jumps
+    public bool gameOver = false;
 
     // Called once before the first frame: setup and initialization.
     private void Start()
@@ -30,6 +31,14 @@ public class PlayerController : MonoBehaviour
     // Called by Unity when this Collider starts touching another Collider.
     private void OnCollisionEnter(Collision collision)
     {
-        isGrounded = true;                       // Any collision counts as landing
+        if (collision.gameObject.CompareTag("Ground"))
+        {
+            isGrounded = true;                       // Any collision counts as landing
+        }
+        else if (collision.gameObject.CompareTag("Obstacle"))
+        {
+            Debug.Log("Game Over");
+            gameOver = true;
+        }
     }
 }

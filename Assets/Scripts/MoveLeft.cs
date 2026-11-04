@@ -2,16 +2,21 @@ using UnityEngine;
 
 public class MoveLeft : MonoBehaviour
 {
-    [SerializeField] float speed = 30f;
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
+    [SerializeField] private float speed = 30f;   // Movement speed in units per second
+    private PlayerController _playerControllerScript;
+
+    // Called once before the first frame (currently unused).
     void Start()
     {
-        
+        _playerControllerScript = GameObject.Find("Player").GetComponent<PlayerController>();
     }
 
-    // Update is called once per frame
+    // Called every frame: moves the object to the left.
     void Update()
     {
-        transform.Translate(Vector3.left * (speed * Time.deltaTime));
+        if (_playerControllerScript.gameOver == false)
+        {
+            transform.Translate(Vector3.left * (speed * Time.deltaTime));   // deltaTime keeps speed the same at any FPS
+        }
     }
 }
