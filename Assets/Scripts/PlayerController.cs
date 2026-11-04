@@ -10,6 +10,7 @@ public class PlayerController : MonoBehaviour
     public float gravityModifier;         // Global gravity multiplier (higher = snappier jump)
     public bool isGrounded = true;        // True while touching something; prevents mid-air jumps
     public bool gameOver = false;         // True when the player hits an obstacle; stops movement and spawning
+    public ParticleSystem explosionParticle;    // Particle system to play when the player dies
 
     // Called once before the first frame: setup and initialization.
     private void Start()
@@ -44,6 +45,7 @@ public class PlayerController : MonoBehaviour
             gameOver = true;
             _playerAnim.SetBool("Death_b", true);   // Play death animation
             _playerAnim.SetInteger("DeathType_int", 1); // Play death animation type
+            explosionParticle.Play();                     // Play particle effect
         }
     }
 }
