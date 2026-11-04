@@ -4,7 +4,7 @@ public class MoveLeft : MonoBehaviour
 {
     [SerializeField] private float speed = 30f;   // Movement speed in units per second
     private PlayerController _playerControllerScript; // Cached reference to the PlayerController script (set in Start)
-    private float _leftBound = -15f; // off-screen left bound to destroy Obstacles
+    private readonly float _leftBound = -15f; // off-screen left bound to destroy Obstacles
 
     void Start()
     {
